@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {FaPlusCircle} from 'react-icons/fa'
 
 class InputTodo extends Component {
   constructor(props) {
@@ -20,11 +21,14 @@ class InputTodo extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-    this.props.addTodoProps(this.state.title);
-    this.setState({
-      title: "",
-    });
+    if (this.state.title.trim()) {
+      this.props.addTodoProps(this.state.title);
+      this.setState({
+        title: "",
+      });
+    } else {
+      alert("Please write item");
+    }
   }
   render() {
     return (
@@ -36,7 +40,7 @@ class InputTodo extends Component {
           name="title"
           placeholder="Add Todo..."
         />
-        <button>Submit</button>
+        <button className="input-submit"> <FaPlusCircle /></button>
       </form>
     );
   }

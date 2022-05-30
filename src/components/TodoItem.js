@@ -1,5 +1,6 @@
 import React from "react";
 import "./TodoItem.css";
+import { FaTrash } from "react-icons/fa"
 
 class TodoItem extends React.Component {
   constructor(props) {
@@ -43,13 +44,13 @@ class TodoItem extends React.Component {
               this.props.handleDelete(this.props.todo.id);
             }}
           >
-            Delete
+           <FaTrash/>
           </button>
         </div>
         <input
           type="text"
           style={editMode}
-          // className={styles.textInput}
+          // className=
           value={this.props.todo.title}
           onChange={(e) => {
             this.props.setUpdate(e.target.value, this.props.todo.id);
