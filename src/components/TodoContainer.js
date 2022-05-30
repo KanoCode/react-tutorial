@@ -1,4 +1,6 @@
 import React from "react";
+import InputTodo from "./InputTodo";
+
 
 import TodoList from "./TodoList";
 import Header from "./Header";
@@ -6,34 +8,68 @@ class TodoContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      todos: [
-        {
-          id: 1,
-          title: "Setup development environment",
-          completed: true,
-        },
-        {
-          id: 2,
-          title: "Develop website and add content",
-          completed: false,
-        },
-        {
-          id: 3,
-          title: "Deploy to live server",
-          completed: false,
-        },
-      ],
+      todos: [],
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.setUpdate = this.setUpdate.bind(this);
   }
-  handleChange(id){
-      console.log("clicked",id)
+  componentDidMount() {
+    fetch("https://jsonplaceholder.typicode.com/todos?_limit=10")
+      .then((response) => response.json())
+      .then((data) => console.log(data));
   }
+
+  //Update state when user types
+  setUpdate = (updatedTitle, id) => {
+    this.setState({
+      todos: this.state.todos.map((todo) => {
+        if (todo.id === id) {
+          todo.title = updatedTitle;
+        }
+        return todo;
+      }),
+    });
+  };
+  handleChange(id) {
+    const clickedItm = this.state.todos.filter(
+      (todoItem) => todoItem.id === id
+    )[0];
+    this.setState({
+      todos: this.state.todos.map((todo) => {
+        if (todo.id === id) {
+          todo.completed = !todo.completed;
+        }
+        return todo;
+      }),
+    });
+  }
+
+  handleDelete = (id) => {
+    this.setState({
+      todos: this.state.todos.filter((todo) => {
+        return todo.id != id;
+      }),
+    });
+  };
+//form data
+addTodoItem = title => {
+  console.log(title);
+};
+
+  
 
   render() {
     return (
       <div>
-          <Header />
-        <TodoList todos={this.state.todos} handleChangeProps={this.handleChange}/>{" "}
+        <Header />
+        <InputTodo addTodoProps={this.addTodoItem}/>
+        <TodoList
+          todos={this.state.todos}
+          handleChangeProps={this.handleChange}
+          handleDelete={this.handleDelete}
+          setUpdate={this.setUpdate}
+        />{" "}
       </div>
     );
   }
