@@ -1,6 +1,7 @@
-import React from "react";
-import "./TodoItem.css";
-import { FaTrash } from "react-icons/fa"
+import PropTypes from 'prop-types';
+import React from 'react';
+import { FaTrash } from 'react-icons/fa';
+import styles from './TodoItem.module.css';
 
 class TodoItem extends React.Component {
   constructor(props) {
@@ -8,52 +9,60 @@ class TodoItem extends React.Component {
     this.handleEditing = this.handleEditing.bind(this);
     this.state = { editing: false };
   }
+
   handleEditing = () => {
-    console.log("edit mode activated");
     this.setState({ editing: true });
   };
-  handleUpdatedDone = event => {
-    if(event.key === "Enter"){
+
+  handleUpdatedDone = (event) => {
+    if (event.key === 'Enter') {
       this.setState({ editing: false });
     }
-  }
-  render() {
-    let viewMode = {};
-    let editMode = {};
+  };
 
-    if (this.state.editing) {
-      viewMode.display = "none";
+  render() {
+    const viewMode = {};
+    const editMode = {};
+    const { editing } = this.state;
+    const {
+      handleDelete, todo, handleChangeProps, setUpdate,
+    } = this.props;
+    if (editing) {
+      viewMode.display = 'none';
     } else {
-      editMode.display = "none";
+      editMode.display = 'none';
     }
+    const { completed, id, title } = todo;
     return (
-      <li>
+      <li className={styles.item}>
         <div onDoubleClick={this.handleEditing} style={viewMode}>
-          {" "}
+          {' '}
           <input
             type="checkbox"
-            checked={this.props.todo.completed}
+            className={styles.checkbox}
+            checked={completed}
             onChange={() => {
-              console.log();
-              this.props.handleChangeProps(this.props.todo.id);
+              handleChangeProps(id);
             }}
-          />{" "}
-          {this.props.todo.title}
+          />
+          {' '}
+          {title}
           <button
             onClick={() => {
-              this.props.handleDelete(this.props.todo.id);
+              handleDelete(id);
             }}
+            type="button"
           >
-           <FaTrash/>
+            <FaTrash />
           </button>
         </div>
         <input
           type="text"
           style={editMode}
-          // className=
-          value={this.props.todo.title}
+          className={styles.textInput}
+          value={title}
           onChange={(e) => {
-            this.props.setUpdate(e.target.value, this.props.todo.id);
+            setUpdate(e.target.value, id);
           }}
           onKeyDown={this.handleUpdatedDone}
         />
@@ -61,5 +70,12 @@ class TodoItem extends React.Component {
     );
   }
 }
+TodoItem.propTypes = {
+  handleChangeProps: PropTypes.func.isRequired,
+  setUpdate: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  todo: PropTypes.objectOf().isRequired,
+
+};
 
 export default TodoItem;
